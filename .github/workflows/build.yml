@@ -33,7 +33,7 @@ jobs:
 
 
   test:
-    name: test latest / Django@${{ matrix.django-version }} / Python@${{ matrix.python-version }}
+    name: test / Django@${{ matrix.django-version }} / Python@${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -66,8 +66,8 @@ jobs:
             pip install coveralls
             coveralls --service=github
 
-  test_deprecated:  # testing older versions of python+django
-    name: test old stuff / Django@${{ matrix.django-version }} / Python@${{ matrix.python-version }}
+  test_lts:  # testing older versions of python+django
+    name: test LTS django / Django@${{ matrix.django-version }} / Python@${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:  # TODO: use a YAML anchor - not supported in GitHub actions "yet"
       fail-fast: false
