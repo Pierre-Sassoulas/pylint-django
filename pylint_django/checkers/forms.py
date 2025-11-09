@@ -1,6 +1,6 @@
 """Models."""
 
-from astroid.nodes import Assign, AssignName, ClassDef
+from astroid import nodes
 from pylint.checkers import BaseChecker
 
 from pylint_django.__pkginfo__ import BASE_ID
@@ -10,7 +10,7 @@ from pylint_django.utils import node_is_subclass
 
 def _get_child_meta(node):
     for child in node.get_children():
-        if isinstance(child, ClassDef) and child.name == "Meta":
+        if isinstance(child, nodes.ClassDef) and child.name == "Meta":
             return child
     return None
 
@@ -40,7 +40,7 @@ class FormChecker(BaseChecker):
             return
 
         for child in meta.get_children():
-            if not isinstance(child, Assign) or not isinstance(child.targets[0], AssignName):
+            if not isinstance(child, nodes.Assign) or not isinstance(child.targets[0], nodes.AssignName):
                 continue
 
             if child.targets[0].name == "exclude":
