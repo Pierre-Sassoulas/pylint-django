@@ -4,11 +4,15 @@ import os
 import pickle
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 from _pytest.config import Config
 from pylint.testutils import FunctionalTestFile, LintModuleTest
 from pylint.testutils.functional import get_functional_test_files_from_directory
+
+if TYPE_CHECKING:
+    from pytest_remaster import GoldenMaster
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pylint_django.tests.settings")
 
@@ -53,10 +57,10 @@ TESTS = [
 
 
 @pytest.mark.parametrize("test_file", TESTS, ids=lambda x: x.base)
-def test_everything(test_file: FunctionalTestFile):
+def test_everything(test_file: FunctionalTestFile, golden_master: GoldenMaster) -> None:
     lint_test = PylintDjangoLintModuleTest(test_file)
     lint_test.setUp()
-    lint_test.runTest()
+    lint_test.runTest(golden_master)
 
 
 # NOTE: define tests for the migrations checker!
@@ -64,10 +68,10 @@ MIGRATIONS_TESTS = get_functional_test_files_from_directory(MIGRATIONS_DIR)
 
 
 @pytest.mark.parametrize("migration_test_file", MIGRATIONS_TESTS, ids=lambda x: x.base)
-def test_migrations_plugin(migration_test_file: FunctionalTestFile) -> None:
+def test_migrations_plugin(migration_test_file: FunctionalTestFile, golden_master: GoldenMaster) -> None:
     lint_test = PylintDjangoMigrationsTest(migration_test_file)
     lint_test.setUp()
-    lint_test.runTest()
+    lint_test.runTest(golden_master)
 
 
 @pytest.mark.parametrize("test_file", MIGRATIONS_TESTS[:1], ids=lambda x: x.base)
